@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Kaomoji Music Player</title>
+  <style>
+    body {
+      background: #fff;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: monospace;
+    }
+    .player {
+      display: flex;
+      gap: 20px;
+      background: #fff;
+      padding: 15px 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 8px rgba(0,0,0,0px);
+    }
+    button {
+      background: none;
+      border: none;
+      color: #6c6c6c;
+      font-size: 22px;
+      cursor: pointer;
+      transition: transform 0.2s, color 0.3s;
+    }
+    button:hover {
+      color: #6c6c6c;
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="player">
+    <button id="prev">◁</button>
+    <button id="play">▷</button>
+    <button id="next">▷▷</button>
+    <button id="repeat">↻</button>
+  </div>
+
+  <audio id="audio" autoplay></audio>
+
+  <script>
+    // Lista de músicas
+    const playlist = [
+      "https://files.matikiri.net/uploads/ZEROBASEONE_-_Goosebumps.mp3",
+      "https://files.matikiri.net/uploads/ZEROBASEONE_HAO_WEI.mp3",
+      ""
+    ];
+
+    let currentTrack = 0;
+    let repeat = false;
+    const audio = document.getElementById("audio");
+    const playBtn = document.getElementById("play");
+    const nextBtn = document.getElementById("next");
+    const prevBtn = document.getElementById("prev");
+    const repeatBtn = document.getElementById("repeat");
+
+    // Carregar faixa
+    function loadTrack(index) {
+      audio.src = playlist[index];
+      audio.play();
+      playBtn.textContent = "||"; // pausa visível
+    }
+
+    // Primeira música
+    loadTrack(currentTrack);
+
+    // Play/Pause
+    playBtn.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play();
+        playBtn.textContent = "||";
+      } else {
+        audio.pause();
+        playBtn.textContent = "▷";
+      }
+    });
+
+    // Próxima
+    nextBtn.addEventListener("click", () => {
+      currentTrack = (currentTrack + 1) % playlist.length;
+      loadTrack(currentTrack);
+    });
+
+    // Anterior
+    prevBtn.addEventListener("click", () => {
+      currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+      loadTrack(currentTrack);
+    });
+
+    // Repeat toggle
+    repeatBtn.addEventListener("click", () => {
+      repeat = !repeat;
+      repeatBtn.style.color = repeat ? "#1db954" : "#fff";
+    });
+
+    // Avança ou repete ao terminar
+    audio.addEventListener("ended", () => {
+      if (repeat) {
+        loadTrack(currentTrack);
+      } else {
+        currentTrack = (currentTrack + 1) % playlist.length;
+        loadTrack(currentTrack);
+      }
+    });
+  </script>
+</body>
+</html>
